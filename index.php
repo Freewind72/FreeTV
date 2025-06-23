@@ -185,12 +185,7 @@ $user = $_SESSION['user'] ?? null;
                     echo '<video src="' . htmlspecialchars($video) . '" controls controlsList="nodownload" oncontextmenu="return false;" autoplay loop playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;"></video>';
                 }
                 ?>
-                <div id="danmu-layer"></div>
             </div>
-            <form id="danmu-form">
-                <input type="text" id="danmu-input" maxlength="50" placeholder="发送弹幕...">
-                <button type="submit">发送</button>
-            </form>
         </div>
         <section class="comments-section" style="position:relative;">
             <h2 style="margin-right:120px;">讨论区</h2>

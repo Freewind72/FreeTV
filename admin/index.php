@@ -182,23 +182,12 @@ if (empty($_SESSION['admin_logged_in'])):
 exit;
 endif;
 
-// 确保comments表和danmu表有nick字段（自动升级表结构）
+// 确保comments表有nick字段（自动升级表结构）
 try {
     $db->exec("ALTER TABLE comments ADD COLUMN nick TEXT");
 } catch (PDOException $e) {}
-try {
-    $db->exec("ALTER TABLE danmu ADD COLUMN nick TEXT");
-} catch (PDOException $e) {}
 
-// 处理删除弹幕
-if (isset($_GET['del_danmu'])) {
-    $id = intval($_GET['del_danmu']);
-    $db->prepare("DELETE FROM danmu WHERE id=?")->execute([$id]);
-    header('Location: index.php');
-    exit;
-}
-
-// 处理删除评论
+// 删除处理删除评论
 if (isset($_GET['del_comment'])) {
     $id = intval($_GET['del_comment']);
     $db->prepare("DELETE FROM comments WHERE id=?")->execute([$id]);
@@ -320,23 +309,6 @@ $settings = get_settings();
             <textarea name="popup" rows="4"><?php echo htmlspecialchars($settings['popup']??''); ?></textarea>
             <button type="submit">保存</button>
         </form>
-        <h2>弹幕管理</h2>
-        <table class="admin-table">
-            <tr><th>ID</th><th>内容</th><th>操作</th></tr>
-            <?php
-            try {
-                foreach($db->query("SELECT id, text FROM danmu ORDER BY id DESC LIMIT 30") as $row): ?>
-                <tr>
-                    <td><?php echo $row['id']; ?></td>
-                    <td><?php echo htmlspecialchars($row['text']); ?></td>
-                    <td><a class="del-btn" href="?del_danmu=<?php echo $row['id']; ?>" onclick="return confirm('确定删除?')">删除</a></td>
-                </tr>
-            <?php endforeach;
-            } catch (PDOException $e) {
-                echo '<tr><td colspan="3" style="color:#f44">弹幕表不存在，已自动修复，请刷新页面。</td></tr>';
-            }
-            ?>
-        </table>
         <h2>评论管理</h2>
         <table class="admin-table">
             <tr><th>ID</th><th>昵称</th><th>内容</th><th>操作</th></tr>
